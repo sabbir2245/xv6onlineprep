@@ -36,5 +36,7 @@ entry("getpid");
 entry("sbrk");
 entry("sleep");
 entry("uptime");
+#==========new code =====================================
 entry("trace");
 entry("history");
+#==========END new code =================================

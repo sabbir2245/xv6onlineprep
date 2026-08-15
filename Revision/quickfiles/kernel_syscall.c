@@ -101,9 +101,10 @@ extern uint64 sys_unlink(void);
 extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
-//====new code =====
+//==========new code =====================================
 extern uint64 sys_trace(void);
 extern uint64 sys_history(void);
+//==========END new code =================================
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -129,12 +130,13 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-//====new code =====
+//==========new code =====================================
 [SYS_trace]   sys_trace,
 [SYS_history] sys_history,
+//==========END new code =================================
 };
 
-//====new code =====
+//==========new code =====================================
 static char *syscall_names[] = {
 [SYS_fork] "fork", [SYS_exit] "exit", [SYS_wait] "wait",
 [SYS_pipe] "pipe", [SYS_read] "read", [SYS_kill] "kill",
@@ -145,18 +147,21 @@ static char *syscall_names[] = {
 [SYS_link] "link", [SYS_mkdir] "mkdir", [SYS_close] "close",
 [SYS_trace] "trace", [SYS_history] "history",
 };
+//==========END new code =================================
 
-//====new code =====
+//==========new code =====================================
 struct syscall_stat_entry {
   struct spinlock lock;
   int count;
   int accum_time;
 };
+//==========END new code =================================
 
-//====new code =====
+//==========new code =====================================
 static struct syscall_stat_entry syscall_stats[NELEM(syscalls)];
+//==========END new code =================================
 
-//====new code =====
+//==========new code =====================================
 void
 syscall_stats_init(void)
 {
@@ -164,8 +169,9 @@ syscall_stats_init(void)
   for(i = 1; i < NELEM(syscalls); i++)
     initlock(&syscall_stats[i].lock, "syscall_stat");
 }
+//==========END new code =================================
 
-//====new code =====
+//==========new code =====================================
 static uint
 syscall_ticks(void)
 {
@@ -175,8 +181,9 @@ syscall_ticks(void)
   release(&tickslock);
   return now;
 }
+//==========END new code =================================
 
-//====new code =====
+//==========new code =====================================
 static void
 syscall_stat_record(int number, uint elapsed)
 {
@@ -185,8 +192,9 @@ syscall_stat_record(int number, uint elapsed)
   syscall_stats[number].accum_time += elapsed;
   release(&syscall_stats[number].lock);
 }
+//==========END new code =================================
 
-//====new code =====
+//==========new code =====================================
 void
 syscall_stat_get(int number, char *name, int *count, int *accum_time)
 {
@@ -196,8 +204,9 @@ syscall_stat_get(int number, char *name, int *count, int *accum_time)
   *accum_time = syscall_stats[number].accum_time;
   release(&syscall_stats[number].lock);
 }
+//==========END new code =================================
 
-//====new code =====
+//==========new code =====================================
 static void
 trace_string(uint64 address)
 {
@@ -207,8 +216,9 @@ trace_string(uint64 address)
   else
     printf("%s", string);
 }
+//==========END new code =================================
 
-//====new code =====
+//==========new code =====================================
 static void
 trace_arguments(int number, uint64 args[])
 {
@@ -238,6 +248,7 @@ trace_arguments(int number, uint64 args[])
     printf("%d, %p", (int)args[0], (void *)args[1]); break;
   }
 }
+//==========END new code =================================
 
 void
 syscall(void)
@@ -251,7 +262,7 @@ syscall(void)
 
   num = p->trapframe->a7;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
-    //====new code =====
+    //==========new code =====================================
     for(i = 0; i < NELEM(args); i++)
       args[i] = argraw(i);
     // exec replaces the process page table, so preserve its pathname before
@@ -275,7 +286,8 @@ syscall(void)
     // Use num to lookup the system call function for num, call it,
     // and store its return value in p->trapframe->a0
     p->trapframe->a0 = syscalls[num]();
-    //====new code =====
+    //==========END new code =================================
+    //==========new code =====================================
     syscall_stat_record(num, syscall_ticks() - start_ticks);
     if(p->trace_sys_num == num) {
       printf("pid: %d, syscall: %s, args: (", p->pid, syscall_names[num]);
@@ -285,6 +297,7 @@ syscall(void)
         trace_arguments(num, args);
       printf("), return: %d\n", (int)p->trapframe->a0);
     }
+    //==========END new code =================================
   } else {
     printf("%d %s: unknown sys call %d\n",
             p->pid, p->name, num);

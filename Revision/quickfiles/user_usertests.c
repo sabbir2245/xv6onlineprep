@@ -241,7 +241,9 @@ copyinstr3(char *s)
 // See if the kernel refuses to read/write user memory that the
 // application doesn't have anymore, because it returned it.
 void
+//==========new code =====================================
 rwsbrk(char *s)
+//==========END new code =================================
 {
   int fd, n;
   

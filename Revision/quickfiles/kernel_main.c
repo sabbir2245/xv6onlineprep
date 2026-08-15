@@ -20,8 +20,9 @@ main()
     kvminit();       // create kernel page table
     kvminithart();   // turn on paging
     procinit();      // process table
-    //====new code =====
+//==========new code =====================================
     syscall_stats_init(); // system call history locks and counters
+//==========END new code =================================
     trapinit();      // trap vectors
     trapinithart();  // install kernel trap vector
     plicinit();      // set up interrupt controller

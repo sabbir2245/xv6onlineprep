@@ -59,8 +59,11 @@ OBJDUMP = $(TOOLPREFIX)objdump
 CFLAGS = -Wall -Werror -O -fno-omit-frame-pointer -ggdb -gdwarf-2
 CFLAGS += -MD
 CFLAGS += -mcmodel=medany
+#==========new code =====================================
 CFLAGS += -march=rv64g
 ASFLAGS += -march=rv64g
+#==========END new code =================================
+#==========END new code =================================
 # CFLAGS += -ffreestanding -fno-common -nostdlib -mno-relax
 CFLAGS += -fno-common -nostdlib -mno-relax
 CFLAGS += -fno-builtin-strncpy -fno-builtin-strncmp -fno-builtin-strlen -fno-builtin-memset
@@ -124,7 +127,7 @@ mkfs/mkfs: mkfs/mkfs.c $K/fs.h $K/param.h
 # http://www.gnu.org/software/make/manual/html_node/Chained-Rules.html
 .PRECIOUS: %.o
 
-#====new code =====
+#==========new code =====================================
 UPROGS=\
 	$U/_cat\
 	$U/_echo\

@@ -1,4 +1,5 @@
 struct stat;
+//==========new code =====================================
 struct syscall_stat {
   char syscall_name[16];
   int count;
@@ -7,6 +8,7 @@ struct syscall_stat {
 
 int trace(int);
 int history(int, struct syscall_stat*);
+//==========END new code =================================
 
 // system calls
 int fork(void);

@@ -5,17 +5,19 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
-//====new code =====
+//==========new code =====================================
 #include "syscall.h"
+//==========END new code =================================
 
-//====new code =====
+//==========new code =====================================
 struct syscall_stat {
   char syscall_name[16];
   int count;
   int accum_time;
 };
+//==========END new code =================================
 
-//====new code =====
+//==========new code =====================================
 uint64
 sys_trace(void)
 {
@@ -27,8 +29,9 @@ sys_trace(void)
   myproc()->trace_sys_num = syscall_number;
   return 0;
 }
+//==========END new code =================================
 
-//====new code =====
+//==========new code =====================================
 uint64
 sys_history(void)
 {
@@ -47,6 +50,7 @@ sys_history(void)
     return -1;
   return 0;
 }
+//==========END new code =================================
 
 uint64
 sys_exit(void)

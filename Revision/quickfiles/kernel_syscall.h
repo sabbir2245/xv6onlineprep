@@ -20,5 +20,7 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
+//==========new code =====================================
 #define SYS_trace   22
 #define SYS_history 23
+//==========END new code =================================

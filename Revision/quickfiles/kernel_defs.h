@@ -140,8 +140,10 @@ void            argaddr(int, uint64 *);
 int             fetchstr(uint64, char*, int);
 int             fetchaddr(uint64, uint64*);
 void            syscall();
+//==========new code =====================================
 void            syscall_stats_init(void);
 void            syscall_stat_get(int, char *, int *, int *);
+//==========END new code =================================
 
 // trap.c
 extern uint     ticks;

@@ -1,4 +1,4 @@
-//====new code =====
+//==========new code =====================================
 #include "kernel/types.h"
 #include "kernel/syscall.h"
 #include "user/user.h"
@@ -32,3 +32,4 @@ main(int argc, char *argv[])
   }
   exit(0);
 }
+//==========END new code =================================

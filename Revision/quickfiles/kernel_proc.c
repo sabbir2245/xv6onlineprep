@@ -124,8 +124,9 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
-  //====new code =====
+  //==========new code =====================================
   p->trace_sys_num = 0;
+  //==========END new code =================================
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
@@ -170,8 +171,9 @@ freeproc(struct proc *p)
   p->chan = 0;
   p->killed = 0;
   p->xstate = 0;
-  //====new code =====
+  //==========new code =====================================
   p->trace_sys_num = 0;
+  //==========END new code =================================
   p->state = UNUSED;
 }
 
@@ -307,7 +309,9 @@ fork(void)
   np->trapframe->a0 = 0;
 
   // Inherit tracing state from parent.
+  //==========new code =====================================
   np->trace_sys_num = p->trace_sys_num;
+  //==========END new code =================================
 
   // increment reference counts on open file descriptors.
   for(i = 0; i < NOFILE; i++)

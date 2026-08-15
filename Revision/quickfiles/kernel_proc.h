@@ -104,6 +104,7 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-  //====new code =====
+  //==========new code =====================================
   int trace_sys_num;           // System call number traced by this process.
+//==========END new code =================================
 };
