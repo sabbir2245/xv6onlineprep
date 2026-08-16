@@ -1,5 +1,16 @@
 # Practice Problems — xv6 System Calls
 
+**Index (jump to a problem):**
+
+| # | Topic | Syscalls | Syscall #s | Sample command |
+|---|-------|----------|-----------|----------------|
+| [1](#problem-1--reverse-string) | Reverse String | `setReverseMode`, `reverseString` | 26/27 | `rev run hello` |
+| [2](#problem-2--character-counter) | Character Counter | `setTargetChar`, `countChar` | 28/29 | `cnt run banana` |
+| [3](#problem-3--vowel-remover) | Vowel Remover | `setVowelMode`, `removeVowels` | 30/31 | `vow run hello` |
+| [4](#problem-4--password-checker) | Password Checker | `setPassword`, `checkPassword` | 32/33 | `pw check secret` |
+| [5](#problem-5--running-sum) | Running Sum | `setBase`, `addToBase` | 34/35 | `sum add 5` |
+| [Common Checklist](#common-checklist-all-problems) | All steps | — | — | — |
+
 This document presents 5 practice problems modeled on the online exam format. Each
 problem adds two system calls to xv6, mirroring the structure of the Caesar-cipher
 exam so you can practice the full flow: `kernel/syscall.h` numbering, `kernel/sysproc.c`

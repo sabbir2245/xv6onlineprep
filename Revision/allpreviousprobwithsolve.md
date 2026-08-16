@@ -191,6 +191,92 @@ main(int argc, char *argv[])
 - The output `(kernel space)` / `(user space)` lines are just printed by the user
   program; they don't reflect where the counting actually happens.
 
+### Flow Explanation (to the Teacher)
+
+**Goal:** `countFreq(char *str, struct freq_array *a)` takes a string and an empty
+128-int array, counts how many times each ASCII char (0–127) appears, and fills the
+array.
+
+#### 1. User command → trap
+
+> "User runs `freqall banana`. In `user/freqall.c`, `main()` calls
+> `countFreq(argv[1], &fa)`."
+
+The wrapper comes from `user/usys.pl` (`entry("countFreq");`), which generates a stub
+in `usys.S`. It does `ecall` → a **trap** into kernel mode, with:
+
+- `a0` = pointer to the string (`argv[1]`)
+- `a1` = pointer to `&fa` (the output struct)
+
+Those register values are saved in the process `trapframe`.
+
+#### 2. Dispatch
+
+> "The kernel reads the syscall number and indexes the `syscalls[]` table in
+> `kernel/syscall.c` → `[SYS_countFreq] sys_countFreq,`."
+
+`SYS_countFreq` is **22** in `kernel/syscall.h` (first free number after 21).
+
+#### 3. Read the two args
+
+```c
+if(argaddr(0, &str_addr) < 0 || argaddr(1, &fa_addr) < 0)
+  return -1;
+```
+
+> "`argaddr` pulls the raw *user virtual addresses* out of the trapframe. I must NOT
+> dereference these directly — they point into user memory."
+
+#### 4. Bring the string in
+
+```c
+if(fetchstr(str_addr, str, sizeof(str)) < 0)
+  return -1;
+```
+
+> "`fetchstr` safely copies the null-terminated user string into the kernel buffer
+> `str[128]`, validating page boundaries."
+
+#### 5. Compute — the counting
+
+```c
+for(i = 0; i < 128; i++)
+  fa.counts[i] = 0;
+for(i = 0; str[i] != '\0'; i++)
+  fa.counts[(unsigned char)str[i]]++;
+```
+
+> "First I zero all 128 slots so unused chars read 0. Then I walk the string and use
+> each char's ASCII value as an index, incrementing that slot. The `(unsigned char)`
+> cast avoids sign issues. For `banana`: `counts['a']=3, counts['b']=1, counts['n']=2`."
+
+#### 6. Send the result back
+
+```c
+if(copyout(myproc()->pagetable, fa_addr, (char *)&fa, sizeof(fa)) < 0)
+  return -1;
+return 0;
+```
+
+> "`copyout` writes the whole 128-int struct from kernel memory back into the user's
+> `fa`. Return `0` = success."
+
+#### 7. Back in user space
+
+```c
+for(i = 0; i < 128; i++)
+  if(fa.counts[i] > 0)
+    printf("%c: %d\n", (char)i, fa.counts[i]);
+```
+
+> "`fa.counts[]` is now filled; the user program prints each char (count > 0) and its
+> count, matching the sample output. The `(kernel space)` / `(user space)` lines are
+> cosmetic printf — not where counting happens."
+
+**Registration recap:** syscall.h (`#define 22`) · sysproc.c (handler) · syscall.c
+(`extern` + table entry) · user.h (prototype + struct) · usys.pl (`entry`) · plus
+`freqall.c` and the Makefile `$U/_freqall\` line.
+
 ---
 
 ## Problem 2 — B1: Pseudo-Random Sampling
